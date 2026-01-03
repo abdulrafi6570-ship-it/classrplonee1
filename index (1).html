@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XII IPA 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-dark:linear-gradient(160deg,#5b2b82,#1b6f8a);
+  --bg-light:#f4f6fb;
+  --glass:rgba(255,255,255,.18);
+  --border:rgba(255,255,255,.25);
+  --blue:#45e3ff;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:Inter,sans-serif;
+  background:var(--bg-dark);
+  color:#fff;
+  transition:.3s;
+}
+body.light{background:var(--bg-light);color:#111}
+
+.page{display:none;padding:20px;padding-bottom:120px}
+.page.active{display:block}
+
+.title{text-align:center;font-family:Poppins;font-size:26px;margin:18px 0;}
+
+.card{
+  background:var(--glass);
+  backdrop-filter:blur(14px);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:16px;
+  margin-bottom:14px;
+  position:relative;
+}
+body.light .card{background:rgba(0,0,0,.06)}
+
+.menu,.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mulai{color:var(--blue);font-weight:700;margin-top:10px;cursor:pointer;}
+
+.slider{display:flex;gap:12px;overflow-x:auto}
+.slider img{width:100%;border-radius:18px}
+
+.photo{width:100%;border-radius:14px}
+.phone{aspect-ratio:9/16;border-radius:18px;overflow:hidden}
+.laptop{aspect-ratio:16/9;border-radius:18px;overflow:hidden}
+.phone img,.laptop img{width:100%;height:100%;object-fit:cover}
+
+.bar-btn{
+  padding:14px;
+  border-radius:16px;
+  background:rgba(255,255,255,.15);
+  border:1px solid var(--border);
+  cursor:pointer;
+  font-weight:600;
+}
+
+.msg{
+  background:linear-gradient(135deg,#6ee7ff,#8b5cf6);
+  color:#111;
+  padding:12px 14px;
+  border-radius:18px 18px 18px 6px;
+  margin-top:10px;
+}
+.time{font-size:11px;opacity:.6}
+
+.vote{cursor:pointer}
+.bar{height:8px;background:rgba(255,255,255,.3);border-radius:10px;overflow:hidden;margin:6px 0;}
+.bar span{display:block;height:100%;background:var(--blue);width:0%}
+
+.bottom{
+  position:fixed;
+  bottom:12px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--glass);
+  backdrop-filter:blur(14px);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:10px 22px;
+  display:flex;
+  gap:26px;
+  font-size:13px;
+}
+
+.toggle-theme{
+  position:fixed;
+  top:14px;
+  right:14px;
+  background:var(--glass);
+  border:1px solid var(--border);
+  padding:8px 14px;
+  border-radius:20px;
+  cursor:pointer;
+}
+
+.send-btn{
+  margin-top:10px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:16px;
+  background:linear-gradient(135deg,#45e3ff,#8b5cf6);
+  color:#111;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.notif{
+  position:fixed;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#45e3ff;
+  color:#111;
+  padding:12px 20px;
+  border-radius:16px;
+  font-weight:600;
+  display:none;
+  z-index:999;
+  text-align:center;
+}
+.notif.error{background:#f87171;color:#fff}
+
+.modal-bg{
+  display:none;
+  position:fixed;
+  top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.5);
+  align-items:center; justify-content:center;
+  z-index:1000;
+}
+.modal{
+  background:#fff;
+  padding:20px;
+  border-radius:14px;
+  max-width:300px;
+  width:90%;
+  color:#111;
+}
+.modal input, .modal textarea{
+  width:100%;
+  padding:8px;
+  margin:6px 0;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+.modal textarea{
+  resize:vertical;
+  min-height:60px;
+}
+.modal button{
+  padding:8px 12px;
+  margin-top:8px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+}
+.modal .save{background:#45e3ff;color:#111;}
+.modal .cancel{background:#f87171;color:#fff;margin-left:8px;}
+
+.content{margin-bottom:8px;} /* teks di atas tombol Edit */
+
+/* Tombol edit kecil pojok kanan atas */
+.card .edit-btn{
+  position:absolute;
+  top:10px;
+  right:10px;
+  background:rgba(255,255,255,0.2);
+  border:none;
+  border-radius:50%;
+  width:32px;
+  height:32px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16px;
+  transition:0.3s;
+}
+.card .edit-btn:hover{
+  background:var(--blue);
+  color:#111;
+}
+
+/* ======= LOGIN & PESAN BARU ======= */
+.login-card{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(12px);
+  padding:30px 25px;
+  border-radius:20px;
+  width:320px;
+  margin:100px auto;
+  text-align:center;
+}
+#pesan input{
+  flex:1;
+  padding:10px;
+  border-radius:12px;
+  border:none;
+  background:rgba(255,255,255,0.1);
+  color:#fff;
+  font-size:14px;
+}
+#pesan .inputs{
+  display:flex;
+  gap:10px;
+  margin-bottom:10px;
+  flex-wrap:wrap;
+}
+#list{display:flex;flex-direction:column;gap:8px;max-height:500px;overflow-y:auto;}
+</style>
+</head>
+<body>
+
+<div class="toggle-theme" onclick="toggleTheme()">🌙 / ☀️</div>
+<div id="notif" class="notif"></div>
+
+<!-- LOGIN -->
+<div id="login" class="page active">
+  <div class="login-card">
+    <div class="title" style="color:#fff;">Selamat Datang</div>
+    <button class="send-btn" onclick="showAdminLogin()">Login Admin</button>
+    <button class="send-btn" onclick="loginAsMember()" style="background:#8b5cf6;color:#fff;">Masuk sebagai Anggota</button>
+  </div>
+</div>
+
+<!-- FORM LOGIN ADMIN -->
+<div id="admin-login-form" class="page">
+  <div class="login-card">
+    <div class="title" style="color:#fff;">Login Admin</div>
+    <input id="login-user" placeholder="Username">
+    <input id="login-pass" type="password" placeholder="Password">
+    <button class="send-btn" onclick="loginAdmin()">Login</button>
+    <button class="send-btn" onclick="backToChoice()" style="background:#f87171;color:#fff">Kembali</button>
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="home" class="page">
+  <div class="title">XII IPA 2</div>
+  <div class="slider">
+    <img src="https://picsum.photos/800/400?1">
+    <img src="https://picsum.photos/800/400?2">
+    <img src="https://picsum.photos/800/400?3">
+  </div>
+  <div class="menu">
+    <div class="card"><div class="content">Anggota</div><div class="mulai" onclick="openPage('anggota')">MULAI</div></div>
+    <div class="card"><div class="content">Pesan</div><div class="mulai" onclick="openPage('pesan')">MULAI</div></div>
+    <div class="card"><div class="content">Voting</div><div class="mulai" onclick="openPage('voting')">MULAI</div></div>
+    <div class="card"><div class="content">Memories</div><div class="mulai" onclick="openPage('memories')">MULAI</div></div>
+    <div class="card"><div class="content">Instagram</div><div class="mulai" onclick="openPage('ig')">MULAI</div></div>
+    <div class="card"><div class="content">TikTok</div><div class="mulai" onclick="openPage('tt')">MULAI</div></div>
+    <div class="card"><div class="content">Jadwal</div><div class="mulai" onclick="openPage('jadwal')">MULAI</div></div>
+    <div class="card"><div class="content">Tentang</div><div class="mulai" onclick="openPage('tentang')">MULAI</div></div>
+  </div>
+</div>
+
+<!-- ANGGOTA -->
+<div id="anggota" class="page">
+  <div class="title">ANGGOTA KELAS</div>
+  <div class="card">
+    <div class="bar-btn" onclick="toggle('struktur')">📌 Struktur Kelas</div>
+    <div id="struktur" class="content" style="display:none;margin-top:10px">
+      <p>👑 Ketua : Nama Ketua</p>
+      <p>🤝 Wakil : Nama Wakil</p>
+      <p>📝 Sekretaris : Nama Sekretaris</p>
+      <p>💰 Bendahara : Nama Bendahara</p>
+    </div>
+    <button class="edit-btn" onclick="openModal(this.parentElement)">✏️</button>
+  </div>
+  <div class="grid">
+    <script>
+      for(let i=1;i<=32;i++){
+        document.write(`<div class="card"><div class="content"><img src="https://picsum.photos/300?${i}" class="photo"><p>Siswa ${i}</p></div><button class="edit-btn" onclick="openModal(this.parentElement)">✏️</button></div>`);
+      }
+    </script>
+  </div>
+</div>
+
+<!-- PESAN -->
+<div id="pesan" class="page">
+  <div class="title">PESAN</div>
+  <div class="inputs">
+    <input id="nama" placeholder="Nama (opsional)">
+    <input id="msg" placeholder="Tulis pesan...">
+    <button class="send-btn" onclick="sendMsg()">🚀 Kirim</button>
+  </div>
+  <div id="list"></div>
+</div>
+
+<!-- VOTING -->
+<div id="voting" class="page">
+  <div class="title">VOTING</div>
+  <div class="card vote" onclick="vote(0)">Rajin<div class="bar"><span id="bar0"></span></div><small id="c0">0</small></div>
+  <div class="card vote" onclick="vote(1)">Rame<div class="bar"><span id="bar1"></span></div><small id="c1">0</small></div>
+</div>
+
+<!-- JADWAL -->
+<div id="jadwal" class="page">
+  <div class="title">JADWAL</div>
+  <div class="card">
+    <div class="bar-btn" onclick="toggle('ganjil')">📘 Minggu Ganjil</div>
+    <div id="ganjil" class="content" style="display:none;margin-top:10px">
+      <p>Senin : Matematika</p>
+      <p>Selasa : Bahasa Indonesia</p>
+      <p>Rabu : Fisika</p>
+    </div>
+    <button class="edit-btn" onclick="openModal(this.parentElement)">✏️</button>
+  </div>
+  <div class="card">
+    <div class="bar-btn" onclick="toggle('genap')">📕 Minggu Genap</div>
+    <div id="genap" class="content" style="display:none;margin-top:10px">
+      <p>Senin : Biologi</p>
+      <p>Selasa : Bahasa Inggris</p>
+      <p>Rabu : Kimia</p>
+    </div>
+    <button class="edit-btn" onclick="openModal(this.parentElement)">✏️</button>
+  </div>
+</div>
+
+<!-- MEMORIES -->
+<div id="memories" class="page">
+  <div class="title">MEMORIES</div>
+  <script>
+    for(let i=1;i<=7;i++){
+      document.write(`<div class="card"><div class="content"><div class="laptop"><img src="https://picsum.photos/900/500?m${i}"></div></div><button class="edit-btn" onclick="openModal(this.parentElement)">✏️</button></div>`);
+    }
+  </script>
+</div>
+
+<!-- TENTANG -->
+<div id="tentang" class="page">
+  <div class="title">TENTANG KELAS</div>
+  <div class="card"><div class="content"><div class="laptop"><img src="https://picsum.photos/900/500?tentang"></div></div><button class="edit-btn" onclick="openModal(this.parentElement)">✏️</button></div>
+  <div class="card"><div class="content"><p>Website resmi kelas XII IPA 2 sebagai pusat informasi, kenangan, dan komunikasi antar siswa.</p><p>Semua konten di sini dibuat untuk memudahkan siswa melihat anggota kelas, jadwal, pesan anonim, dan memories.</p></div><button class="edit-btn" onclick="openModal(this.parentElement)">✏️</button></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom">
+  <span onclick="openPage('home')">← Kembali</span>
+  <span onclick="openPage('tentang')">Tentang</span>
+</div>
+
+<!-- MODAL EDIT -->
+<div id="modal-bg" class="modal-bg">
+  <div class="modal">
+    <h3>Edit Card</h3>
+    <input id="edit-img" placeholder="URL Foto">
+    <textarea id="edit-text" placeholder="Teks (gunakan enter untuk tiap baris)"></textarea>
+    <div style="text-align:right">
+      <button class="save" onclick="saveEdit()">Simpan</button>
+      <button class="cancel" onclick="closeModal()">Batal</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================== SCRIPT GABUNGAN ================== */
+let editTarget = null;
+let isAdmin = false;
+let currentUser = null;
+
+// Halaman
+function openPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function toggleTheme(){document.body.classList.toggle('light');}
+function toggle(id){const el=document.getElementById(id);el.style.display=el.style.display==='none'?'block':'none';}
+function showNotif(msg,error=false){const n=document.getElementById('notif');n.innerText=msg;n.className=error?'notif error':'notif';n.style.display='block';setTimeout(()=>{n.style.display='none';},2500);}
+function showAdminLogin(){ openPage('admin-login-form'); }
+function backToChoice(){ openPage('login'); }
+function loginAsMember(){currentUser='Anggota';isAdmin=false;showNotif('Masuk sebagai Anggota');openPage('home');}
+function loginAdmin(){const user=document.getElementById('login-user').value.trim();const pass=document.getElementById('login-pass').value.trim();if(user==='admin'&&pass==='1234'){isAdmin=true;currentUser='Admin';showNotif('Login berhasil sebagai Admin!');openPage('home');}else{showNotif('Username / Password salah!',true);}document.getElementById('login-user').value='';document.getElementById('login-pass').value='';}
+
+// PESAN
+function sendMsg(){const msgElem=document.getElementById('msg');const namaElem=document.getElementById('nama');if(!msgElem.value)return;const n=namaElem.value||'Anonim';const t=new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});const listElem=document.getElementById('list');listElem.innerHTML+=`<div class="msg"><b>${n}</b><br>${msgElem.value.replace(/\n/g,'<br>')}<div class="time">${t}</div></div>`;msgElem.value='';}
+
+// VOTING
+let votes=JSON.parse(localStorage.getItem('votes'))||[0,0];
+let choice=localStorage.getItem('choice');
+function vote(i){if(choice!==null){if(choice==i){showNotif('Anda hanya bisa meng-vote 1x',true);return;}votes[choice]--;votes[i]++;choice=i;localStorage.setItem('votes', JSON.stringify(votes));localStorage.setItem('choice', choice);renderVote();showNotif(`Vote berhasil diganti ke "${i===0?'Rajin':'Rame'}"`);return;}votes[i]++;choice=i;localStorage.setItem('votes',
+JSON.stringify(votes));localStorage.setItem('choice', choice);renderVote();showNotif(`Vote berhasil untuk "${i===0?'Rajin':'Rame'}"`);}
+function renderVote(){const t=votes[0]+votes[1]||1;document.getElementById('bar0').style.width=(votes[0]/t*100)+'%';document.getElementById('bar1').style.width=(votes[1]/t*100)+'%';document.getElementById('c0').innerText=votes[0]+' suara';document.getElementById('c1').innerText=votes[1]+' suara';}
+renderVote();
+
+// MODAL EDIT
+function openModal(card){
+  if(!isAdmin){
+    showNotif('Hanya Admin yang bisa mengedit!', true);
+    return;
+  }
+  editTarget=card;
+  const img=card.querySelector('img');
+  const content=card.querySelector('.content');
+  document.getElementById('edit-img').value=img?img.src:'';
+  document.getElementById('edit-text').value=content?Array.from(content.querySelectorAll('p')).map(p=>p.innerText).join('\n'):'';
+  document.getElementById('modal-bg').style.display='flex';
+}
+
+function closeModal(){editTarget=null;document.getElementById('modal-bg').style.display='none';}
+
+function saveEdit(){
+  if(!editTarget) return;
+  const imgUrl = document.getElementById('edit-img').value.trim();
+  const text = document.getElementById('edit-text').value.trim();
+  const img = editTarget.querySelector('img');
+  let content = editTarget.querySelector('.content');
+  if(!content){
+    content = document.createElement('div');
+    content.className = 'content';
+    if(editTarget.querySelector('.edit-btn')) editTarget.insertBefore(content, editTarget.querySelector('.edit-btn'));
+    else editTarget.appendChild(content);
+  }
+  if(imgUrl && img) img.src = imgUrl;
+  content.innerHTML = '';
+  text.split('\n').forEach(line => {
+    if(line.trim()!==''){
+      const p = document.createElement('p');
+      p.innerText = line;
+      content.appendChild(p);
+    }
+  });
+  closeModal();
+  showNotif('Perubahan tersimpan!');
+}
+
+// Fitur admin (saat ini semua tombol edit sudah panggil openModal)
+function enableAdminFeatures(){
+  // Bisa dikembangkan kalau ada fitur admin tambahan
+}
+</script>
+
+</body>
+</html>
